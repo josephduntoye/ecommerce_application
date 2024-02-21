@@ -41,6 +41,17 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.github.java-json-tools</groupId>
+			<artifactId>json-patch</artifactId>
+			<version>1.13</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.cloudinary/cloudinary-http44 -->
+		<dependency>
+			<groupId>com.cloudinary</groupId>
+			<artifactId>cloudinary-http44</artifactId>
+			<version>1.30.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>
