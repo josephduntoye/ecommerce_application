@@ -13,12 +13,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jsonpatch.JsonPatch;
 import com.github.fge.jsonpatch.JsonPatchException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
+@Component
 public class ProductServiceImpl implements ProductService{
     @Autowired
     ProductRepository productRepository;
@@ -62,10 +63,10 @@ public class ProductServiceImpl implements ProductService{
         } catch (IOException e) {
             e.printStackTrace();
         }
-        product.setName(product.getName());
-        product.setPrice(product.getId());
-        product.setQuantity(product.getQuantity());
-        product.setDescription(product.getDescription());
+        product.setName(productDto.getName());
+        product.setPrice(productDto.getPrice());
+        product.setQuantity(productDto.getQuantity());
+        product.setDescription(productDto.getDescription());
 
         return productRepository.save(product);
     }
@@ -78,24 +79,28 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public Product updateProduct(Long productName, JsonPatch productPatch) throws BusinessLogicException, JsonProcessingException, JsonPatchException  {
+    public Product updateProduct(Long productName, ProductDto productPatch) throws BusinessLogicException, JsonProcessingException, JsonPatchException  {
         Optional<Product> productQuery = productRepository.findById(productName);
         if(productQuery.isEmpty()){
             throw new BusinessLogicException("Product with ID"+ productName + "does not exit");
         }
         Product targetProduct = productQuery.get();
         try {
-            targetProduct = applyPatchToProduct(productPatch, targetProduct);
+            //targetProduct = applyPatchToProduct(productPatch, targetProduct);
+            targetProduct.setDescription(productPatch.getDescription());
+            targetProduct.setName(productPatch.getName());
+            targetProduct.setPrice(productPatch.getPrice());
+            targetProduct.setQuantity(productPatch.getQuantity());
             return savedorUpdate(targetProduct);
 
-        } catch (JsonPatchException | JsonProcessingException | BusinessLogicException e) {
+        } catch (BusinessLogicException e) {
             throw new BusinessLogicException("update failed");
         }
     }
-    private  Product applyPatchToProduct(JsonPatch productPatch, Product targetProduct) throws JsonPatchException, JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        JsonNode patched = productPatch.
-                apply(objectMapper.convertValue(targetProduct, JsonNode.class));
-        return objectMapper.treeToValue(patched, Product.class);
-    }
+//    private  Product applyPatchToProduct(JsonPatch productPatch, Product targetProduct) throws JsonPatchException, JsonProcessingException {
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        JsonNode patched = productPatch.
+//                apply(objectMapper.convertValue(targetProduct, JsonNode.class));
+//        return objectMapper.treeToValue(patched, Product.class);
+//    }
 }

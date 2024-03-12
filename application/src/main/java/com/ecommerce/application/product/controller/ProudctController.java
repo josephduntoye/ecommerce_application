@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @RestController
+@RequestMapping("api/product")
 public class ProudctController {
     @Autowired
     ProductService productService;
@@ -43,8 +44,8 @@ public class ProudctController {
 
     }
 
-    @PatchMapping(path = "/{id}", consumes = "application/json-patch+json")
-    public ResponseEntity<?> updateProduct(@PathVariable Long id, @RequestBody JsonPatch productPatch) {
+    @PatchMapping(path = "/{id}")
+    public ResponseEntity<?> updateProduct(@PathVariable Long id, @RequestBody ProductDto productPatch) {
         try {
             Product updateProduct = productService.updateProduct(id, productPatch);
             return ResponseEntity.status(HttpStatus.OK).body(updateProduct);
